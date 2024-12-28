@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  max-width: 600px;
+  margin: 20px auto;
 }
 
 .App-logo {
@@ -35,4 +37,66 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.appContainer {
+}
+
+.addTodoForm {
+  margin: 0 Auto;
+}
+.addTodoForm .todoInput {
+  width: 80%;
+  max-width: 400px;
+  height: 30px;
+  font-size: 18px;
+}
+.addTodoForm .todoBtn {
+  margin-left: 10px;
+  font-size: 18px;
+  padding: 5px 20px;
+}
+
+.todoListContainer {
+  text-align: left;
+}
+
+.todoList {
+  list-style: none;
+  margin: 20px 10px;
+  font-size: 18px;
+}
+
+.listItem {
+  display: flex;
+  border-bottom: 1px dashed #CCCCCC;
+  padding: 10px 0;
+}
+.listItem:last-child {
+  border: none;
+}
+
+.listItem .itemCheckboxContainer {
+  flex: 0;
+  margin-right: 8px
+}
+.listItem .itemText {
+  flex: 5;
+}
+.itemText.done {
+  text-decoration: line-through;
+  color: #ccc;
+}
+.listItem .itemActionsContainer {
+  flex: 1;
+  text-align: right;
+}
+
+.deleteItem {
+  background-color: red;
+  color: white;
+  font-weight: 800;
+  border: none;
+  padding: 4px 7px;
+  cursor: pointer;
 }
