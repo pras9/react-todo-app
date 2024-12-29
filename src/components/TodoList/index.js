@@ -1,37 +1,18 @@
-import { useState, useEffect, useContext } from 'react';
-import { TodoContext } from '../../store';
-import { APP } from '../../config';
+import { TodoStore, toggleTodoAction, deleteTodoAction, deleteTodoListAction } from '../../store';
 import { Todo } from '../Todo';
 
 export function TodoList() {
-  const {todoList, setTodoList} = useContext(TodoContext);
 
-  const markDone = (e) => {
-    let updatedList = [...todoList];
-    updatedList[e.target.dataset['index']]['done'] = e.target.checked;
-    if (e.target.checked) {
-      const checked = updatedList[e.target.dataset['index']];
-      updatedList.splice(e.target.dataset['index'], 1);
-      updatedList = [...updatedList, checked];
-    } else {
-      const unchecked = updatedList[e.target.dataset['index']];
-      updatedList.splice(e.target.dataset['index'], 1);
-      updatedList = [unchecked, ...updatedList];
-    }
-    setTodoList(updatedList);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
+  const toggleTodo = (e) => {
+    TodoStore.dispatch(toggleTodoAction({index: e.target.dataset['index'], checked: e.target.checked}));
   }
 
   const deleteTodo = (e) => {
-    const updatedList = [...todoList];
-    updatedList.splice(e.target.dataset['index'], 1);
-    setTodoList(updatedList);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
+    TodoStore.dispatch(deleteTodoAction(e.target.dataset['index']));
   }
 
   const deleteTodoList = () => {
-    setTodoList([]);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify([]));
+    TodoStore.dispatch(deleteTodoListAction());
   }
 
   return (
@@ -39,10 +20,10 @@ export function TodoList() {
       <Todo />
       <div className='todoListContainer'>
         <ul className='todoList'>
-          {todoList && todoList.length > 0 && todoList.map((todo, i) => (
+          {TodoStore.getState().map((todo, i) => (
             <li key={i} className='listItem'>
               <div className='itemCheckboxContainer'>
-                <input type='checkbox' checked={todo?.done} data-index={i} onChange={markDone} />
+                <input type='checkbox' checked={todo?.done} data-index={i} onChange={toggleTodo} />
               </div>
               <div className={`itemText ${todo?.done ? 'done' : ''}`}>{todo?.text}</div>
               <div className='itemActionsContainer'>
