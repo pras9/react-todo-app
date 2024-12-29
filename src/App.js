@@ -1,19 +1,35 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
-import { Todo } from './components/Todo';
+import { TodoContext } from './store';
+import { TodoList } from './components/TodoList';
+import { APP } from './config';
 
 function App() {
+  const [todoList, setTodoList] = useState([]);
+
+  useEffect(() => {
+    const storageList = window.localStorage.getItem(APP.BROWSER_STORAGE_KEY);
+    if (storageList) {
+      const listObj = JSON.parse(storageList);
+      if (listObj.length > 0) {
+        setTodoList(listObj);
+      }
+    }
+  }, []);
+
   return (
     <div className="App">
-      <header>
-        <h1>Todo App</h1>
-      </header>
+      <TodoContext.Provider value={{ todoList, setTodoList }}>
+        <header>
+          <h1>Todo App</h1>
+        </header>
 
-      <Todo />
+        <TodoList />
 
-      <footer>
-        &copy; prasun.net
-      </footer>
+        <footer>
+          &copy; prasun.net
+        </footer>
+      </TodoContext.Provider>
     </div>
   );
 }
