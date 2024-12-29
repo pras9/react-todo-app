@@ -25,7 +25,11 @@ export function Todo() {
   const markDone = (e) => {
     let updatedList = [...todoList];
     updatedList[e.target.dataset['index']]['done'] = e.target.checked;
-    updatedList = updatedList.sort((a, b) =>  a.done - b.done);
+    if(e.target.checked) {
+      const checked = updatedList[e.target.dataset['index']];
+      updatedList.splice(e.target.dataset['index'], 1);
+      updatedList = [...updatedList, checked];
+    }
     setTodoList(updatedList);
     window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
   }
@@ -35,6 +39,11 @@ export function Todo() {
     updatedList.splice(e.target.dataset['index'], 1);
     setTodoList(updatedList);
     window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
+  }
+
+  const deleteTodoList = () => {
+    setTodoList([]);
+    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify([]));
   }
 
   return (
@@ -47,7 +56,9 @@ export function Todo() {
         <ul className='todoList'>
           {todoList && todoList.length > 0 && todoList.map((todo, i) => (
             <li key={i} className='listItem'>
-              <div className='itemCheckboxContainer'><input type='checkbox' checked={todo?.done} data-index={i} onChange={markDone} /></div>
+              <div className='itemCheckboxContainer'>
+                <input type='checkbox' checked={todo?.done} data-index={i} onChange={markDone} />
+              </div>
               <div className={`itemText ${todo?.done ? 'done' : ''}`}>{todo?.text}</div>
               <div className='itemActionsContainer'>
                 <button className='deleteItem' onClick={deleteTodo} data-index={i}>X</button>
@@ -56,6 +67,7 @@ export function Todo() {
           ))}
         </ul>
       </div>
+      <button className='deleteAll' onClick={deleteTodoList}>Delete All</button>
     </div>
   );
 }
