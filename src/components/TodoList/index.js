@@ -13,6 +13,10 @@ export function TodoList() {
       const checked = updatedList[e.target.dataset['index']];
       updatedList.splice(e.target.dataset['index'], 1);
       updatedList = [...updatedList, checked];
+    } else {
+      const unchecked = updatedList[e.target.dataset['index']];
+      updatedList.splice(e.target.dataset['index'], 1);
+      updatedList = [unchecked, ...updatedList];
     }
     setTodoList(updatedList);
     window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
