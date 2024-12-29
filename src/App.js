@@ -11,7 +11,9 @@ function App() {
 
       <Todo />
 
-      <footer></footer>
+      <footer>
+        &copy; prasun.net
+      </footer>
     </div>
   );
 }
