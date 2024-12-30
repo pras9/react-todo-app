@@ -1,37 +1,21 @@
-import { useState, useEffect, useContext } from 'react';
-import { TodoContext } from '../../store';
-import { APP } from '../../config';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTodo, deleteTodo, deleteTodoList, selectTodo } from '../../store';
 import { Todo } from '../Todo';
 
 export function TodoList() {
-  const {todoList, setTodoList} = useContext(TodoContext);
+  const todos = useSelector(selectTodo);
+  const dispatch = useDispatch();
 
-  const markDone = (e) => {
-    let updatedList = [...todoList];
-    updatedList[e.target.dataset['index']]['done'] = e.target.checked;
-    if (e.target.checked) {
-      const checked = updatedList[e.target.dataset['index']];
-      updatedList.splice(e.target.dataset['index'], 1);
-      updatedList = [...updatedList, checked];
-    } else {
-      const unchecked = updatedList[e.target.dataset['index']];
-      updatedList.splice(e.target.dataset['index'], 1);
-      updatedList = [unchecked, ...updatedList];
-    }
-    setTodoList(updatedList);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
+  const onToggleTodo = (e) => {
+    dispatch(toggleTodo({index: e.target.dataset['index'], checked: e.target.checked}));
   }
 
-  const deleteTodo = (e) => {
-    const updatedList = [...todoList];
-    updatedList.splice(e.target.dataset['index'], 1);
-    setTodoList(updatedList);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify(updatedList));
+  const onDeleteTodo = (e) => {
+    dispatch(deleteTodo(e.target.dataset['index']));
   }
 
-  const deleteTodoList = () => {
-    setTodoList([]);
-    window.localStorage.setItem(APP.BROWSER_STORAGE_KEY, JSON.stringify([]));
+  const onDeleteTodoList = () => {
+    dispatch(deleteTodoList());
   }
 
   return (
@@ -39,20 +23,20 @@ export function TodoList() {
       <Todo />
       <div className='todoListContainer'>
         <ul className='todoList'>
-          {todoList && todoList.length > 0 && todoList.map((todo, i) => (
+          {todos && todos.map((todo, i) => (
             <li key={i} className='listItem'>
               <div className='itemCheckboxContainer'>
-                <input type='checkbox' checked={todo?.done} data-index={i} onChange={markDone} />
+                <input type='checkbox' checked={todo?.done} data-index={i} onChange={onToggleTodo} />
               </div>
               <div className={`itemText ${todo?.done ? 'done' : ''}`}>{todo?.text}</div>
               <div className='itemActionsContainer'>
-                <button className='deleteItem' onClick={deleteTodo} data-index={i}>X</button>
+                <button className='deleteItem' onClick={onDeleteTodo} data-index={i}>X</button>
               </div>
             </li>
           ))}
         </ul>
       </div>
-      <button className='deleteAll' onClick={deleteTodoList}>Delete All</button>
+      <button className='deleteAll' onClick={onDeleteTodoList}>Delete All</button>
     </div>
   );
 }
